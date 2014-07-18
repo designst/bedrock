@@ -1,4 +1,6 @@
 set :stage, :staging
+set :rack_env, :staging
+set :rails_env, :staging
 
 # Simple Role Syntax
 # ==================
@@ -21,4 +23,3 @@ server 'example.com', user: 'deploy', roles: %w{web app db}
 #  }
 
 fetch(:default_env).merge!(wp_env: :staging)
-
