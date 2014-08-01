@@ -7,21 +7,21 @@ set :use_sudo, false
 
 # Branch options
 # Prompts for the branch name (defaults to current branch)
-#ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }
-
-# Sets branch to current one
-#set :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }
+#ask :branch, -> { `git rev-parse --abbrev-ref HEAD`.chomp }
 
 # Hardcodes branch to always be master
 # This could be overridden in a stage config file
 set :branch, :master
 
 set :tmp_dir, "#{fetch(:deploy_home)}/tmp"
-set :deploy_to, "#{fetch(:deploy_home)}/www/#{fetch(:application)}/bedrock"
+set :deploy_to, -> { "#{fetch(:deploy_home)}/www/#{fetch(:application)}/bedrock" }
 set :deploy_via, :remote_cache
 
 set :log_level, :info
 
+# Apache users with .htaccess files:
+# it needs to be added to linked_files so it persists across deploys:
+# set :linked_files, %w{.env web/.htaccess}
 set :linked_files, %w{.env}
 set :linked_dirs, %w{web/app/uploads}
 
