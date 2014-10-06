@@ -1,6 +1,8 @@
 # WordPress
 web/wp
 web/.htaccess
+web/.htaccess.*
+!web/.htaccess.example
 
 # WP-CLI
 db-sync
@@ -24,6 +26,9 @@ web/app/uploads/*
 !web/app/mu-plugins/bedrock-autoloader.php
 
 # Database
+config/database.yml
+config/database.*.yml
+!config/database.yml.example
 db/*.sql*
 
 # Vendor (e.g. Composer)
@@ -40,3 +45,4 @@ bin
 # IDE
 .DS_Store
 .idea
+debug.log
