@@ -1,5 +1,8 @@
 require 'capistrano-db-tasks'
 
+# Automatic Database Backups with Capistrano 3
+# http://www.railsfever.com/blogs/automatic-database-backups-with-capistrano-3
+
 set :db_remote_clean, true
 set :local_rails_env, 'local'
 set :skip_data_sync_confirm, true

@@ -1,5 +1,6 @@
 set :application, 'my_app_name'
 set :deploy_user, 'username'
+
 set :deploy_home, "/home/#{fetch(:deploy_user)}"
 set :repo_url, 'git@example.com:me/my_repo.git'
 
@@ -21,15 +22,26 @@ set :log_level, :info
 
 # Apache users with .htaccess files:
 # it needs to be added to linked_files so it persists across deploys:
-# set :linked_files, %w{.env web/.htaccess}
-set :linked_files, %w{.env}
+set :linked_files, %w{.env config/database.yml web/.htaccess}
 set :linked_dirs, %w{web/app/uploads}
 
 # Database Backup
 set :keep_db_backups, 10
+set :config_example_suffix, '.example'
 
 SSHKit.config.command_map[:composer] = "php -d memory_limit=512M -d allow_url_fopen=1 -d \
 suhosin.executor.include.whitelist=phar #{fetch(:tmp_dir)}/composer.phar"
+
+# Fix tar execution on freebsd system
+module GitStrategy
+    require 'capistrano/git'
+    include Capistrano::Git::DefaultStrategy
+    def release
+        git :archive, fetch(:branch), '| tar -x -f - -C', release_path
+    end
+end
+
+set :git_strategy, GitStrategy
 
 namespace :deploy do
     desc 'Restart application'
@@ -47,21 +59,22 @@ namespace :deploy do
         end
     end
 
-    after :started, 'deploy:composer'
-    before :updating, 'db:backup'
+    desc 'Manage Permission'
+    task :permission do
+        on roles(:app) do
+            execute "chmod 644 #{shared_path}/web/.htaccess"
+        end
+    end
 end
+
+after 'deploy:started', 'deploy:composer'
+
+before 'deploy:check:linked_files', 'config:init'
+before 'deploy:check:linked_files', 'config:push'
+after 'deploy:check:linked_files', 'deploy:permission'
+
+before 'deploy:updating', 'db:backup'
 
 # The above restart task is not run by default
 # Uncomment the following line to run it on deploys if needed
 # after 'deploy:publishing', 'deploy:restart'
-
-# Fix tar execution on freebsd system
-module GitStrategy
-    require 'capistrano/git'
-    include Capistrano::Git::DefaultStrategy
-    def release
-        git :archive, fetch(:branch), '| tar -x -f - -C', release_path
-    end
-end
-
-set :git_strategy, GitStrategy
