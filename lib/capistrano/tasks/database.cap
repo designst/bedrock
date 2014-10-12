@@ -23,20 +23,19 @@ namespace :db do
 
     task :backup do
         on roles(:db) do |host|
-            backup_path = "#{fetch(:deploy_to)}/backups"
-            execute :mkdir, "-p #{backup_path}"
+            execute :mkdir, "-p #{fetch(:db_backup_path)}"
             basename = 'database'
 
             username, password, database, host = get_remote_database_config(fetch(:stage))
             debug "#{username}, #{password}, #{database}, #{host}"
 
             filename = "#{basename}_#{fetch(:stage)}_#{database}_#{Time.now.strftime '%Y-%m-%d-%H%M%S'}.sql.bz2"
-            debug "We will backup to file: #{backup_path}/#{filename}"
+            debug "We will backup to file: #{fetch(:db_backup_path)}/#{filename}"
 
             hostcmd = host.nil? ? '' : "-h #{host}"
-            execute :mysqldump, "-u #{username} --password='#{password}' --databases #{database} #{hostcmd} | bzip2 -9 > #{backup_path}/#{filename}"
+            execute :mysqldump, "-u #{username} --password='#{password}' --databases #{database} #{hostcmd} | bzip2 -9 > #{fetch(:db_backup_path)}/#{filename}"
 
-            purge_old_backups "#{basename}", "#{backup_path}"
+            purge_old_backups "#{basename}", "#{fetch(:db_backup_path)}"
         end
     end
 

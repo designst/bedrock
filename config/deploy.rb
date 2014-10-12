@@ -26,6 +26,7 @@ set :linked_files, %w{.env config/database.yml web/.htaccess}
 set :linked_dirs, %w{web/app/uploads}
 
 # Database Backup
+set :db_backup_path, "#{shared_path}/db/backup"
 set :keep_db_backups, 10
 set :config_example_suffix, '.example'
 
@@ -49,6 +50,7 @@ namespace :deploy do
         on roles(:app), in: :sequence, wait: 5 do
             # Your restart mechanism here, for example:
             # execute :service, :nginx, :reload
+            execute :killall, -9, 'php-cgi'
         end
     end
 
@@ -77,4 +79,4 @@ before 'deploy:updating', 'db:backup'
 
 # The above restart task is not run by default
 # Uncomment the following line to run it on deploys if needed
-# after 'deploy:publishing', 'deploy:restart'
+after 'deploy:publishing', 'deploy:restart'
