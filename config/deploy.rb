@@ -57,6 +57,14 @@ namespace :deploy do
         end
     end
 
+    desc 'Download WP-CLI'
+    task :wpcli do
+        on roles(:app) do
+            execute "curl -sS https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar > #{fetch(:tmp_dir)}/wp-cli.phar"
+            execute :chmod, '+x', "#{fetch(:tmp_dir)}/wp-cli.phar"
+        end
+    end
+
     desc 'Download composer'
     task :composer do
         on roles(:app) do
@@ -92,6 +100,7 @@ namespace :deploy do
     end
 end
 
+after 'deploy:started', 'deploy:wpcli'
 after 'deploy:started', 'deploy:composer'
 
 before 'deploy:check:linked_files', 'config:init'
