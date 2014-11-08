@@ -1,0 +1,28 @@
+# Load upload shared config tasks
+require 'capistrano/upload-config'
+
+namespace :config do
+    desc 'Initialize local config files'
+    task :local do
+        run_locally do
+            fetch(:config_files).each do |config|
+                if File.exists?(config)
+                    warn "Already Exists: #{config}"
+                else
+                    example_suffix = fetch(:config_example_suffix, '')
+                    if File.exists?("#{config}#{example_suffix}")
+                        FileUtils.cp "#{config}#{example_suffix}", config
+                        info "Copied: #{config}#{example_suffix} to #{config}"
+                    else
+                        File.open(config, "w") {}
+                        info "Created: #{config} as empty file"
+                    end
+                end
+            end
+        end
+    end
+end
+
+before 'deploy:check:linked_files', 'config:init'
+before 'deploy:check:linked_files', 'config:push'
+before 'deploy:check:linked_files', 'config:local'
