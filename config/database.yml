@@ -1,0 +1,24 @@
+base: &base
+  adapter: mysql2
+  encoding: utf8
+  reconnect: false
+  pool: 5
+  host: <%= ENV['DB_HOST'] %>
+  database: <%= ENV['DB_NAME'] %>
+  username: <%= ENV['DB_USER'] %>
+  password: <%= ENV['DB_PASSWORD'] %>
+development:
+  <<: *base
+  database: <%= ENV['DB_NAME'] %>_development
+production:
+  <<: *base
+  database: <%= ENV['DB_NAME'] %>_production
+staging:
+  <<: *base
+  database: <%= ENV['DB_NAME'] %>_staging
+local:
+  <<: *base
+  host: <%= ENV['DB_LOCALHOST'] %>
+  database: <%= ENV['DB_LOCALNAME'] %>
+  username: <%= ENV['DB_LOCALUSER'] %>
+  password: <%= ENV['DB_LOCALPASSWORD'] %>

@@ -25,6 +25,10 @@ set :log_level, :info
 set :linked_files, %w{.env config/database.yml web/.htaccess}
 set :linked_dirs, %w{web/app/uploads}
 
+# Upload Configs
+set :config_files, %w{.env web/.htaccess}
+set :config_example_suffix, '.example'
+
 # Database Backup
 set :db_backup_path, "#{shared_path}/db/backup"
 set :keep_db_backups, 10
