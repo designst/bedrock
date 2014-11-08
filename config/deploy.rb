@@ -33,6 +33,9 @@ set :config_example_suffix, '.example'
 set :db_backup_path, "#{shared_path}/db/backup"
 set :keep_db_backups, 10
 
+SSHKit.config.command_map[:wp] = "php -d memory_limit=512M -d allow_url_fopen=1 -d \
+suhosin.executor.include.whitelist=phar #{fetch(:tmp_dir)}/wp-cli.phar"
+
 SSHKit.config.command_map[:composer] = "php -d memory_limit=512M -d allow_url_fopen=1 -d \
 suhosin.executor.include.whitelist=phar #{fetch(:tmp_dir)}/composer.phar"
 
