@@ -22,7 +22,23 @@ namespace :config do
             end
         end
     end
+
+    desc 'Push database configuration to server'
+    task :database do
+        on release_roles :all do
+            within shared_path do
+                config = 'config/database.yml'
+                if File.exists?(config)
+                    info "Uploading config #{config}"
+                    upload! StringIO.new(IO.read(config)), File.join(shared_path, config)
+                else
+                    fail "#{config} doesn't exist"
+                end
+            end
+        end
+    end
 end
 
 before 'deploy:check:linked_files', 'config:init'
 before 'deploy:check:linked_files', 'config:push'
+before 'deploy:check:linked_files', 'config:database'
