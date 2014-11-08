@@ -28,7 +28,6 @@ set :linked_dirs, %w{web/app/uploads}
 # Database Backup
 set :db_backup_path, "#{shared_path}/db/backup"
 set :keep_db_backups, 10
-set :config_example_suffix, '.example'
 
 SSHKit.config.command_map[:composer] = "php -d memory_limit=512M -d allow_url_fopen=1 -d \
 suhosin.executor.include.whitelist=phar #{fetch(:tmp_dir)}/composer.phar"

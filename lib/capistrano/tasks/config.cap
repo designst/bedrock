@@ -1,6 +1,11 @@
 # Load upload shared config tasks
 require 'capistrano/upload-config'
 
+# Configuration
+set :config_files, %w{.env web/.htaccess}
+set :config_example_suffix, '.example'
+
+# Tasks
 namespace :config do
     desc 'Initialize local config files'
     task :local do
@@ -25,4 +30,3 @@ end
 
 before 'deploy:check:linked_files', 'config:init'
 before 'deploy:check:linked_files', 'config:push'
-before 'deploy:check:linked_files', 'config:local'
