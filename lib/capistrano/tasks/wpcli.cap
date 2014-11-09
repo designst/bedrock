@@ -16,3 +16,4 @@ namespace :wpcli do
 end
 
 after 'deploy:published', 'wpcli:plugins:activate'
+after 'deploy:published', 'wpcli:uploads:rsync:push'
