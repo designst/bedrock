@@ -4,9 +4,11 @@ namespace :wpcli do
     namespace :plugins do
         desc 'Activate Installed Plugins'
         task :activate do
-            on roles(:web) do
-                fetch(:required_plugins).each do |plugin|
-                    invoke 'wpcli:run', :plugin, :activate, plugin
+            on roles(:app) do
+                within release_path do
+                    fetch(:required_plugins).each do |plugin|
+                        execute :wp, :plugin, :activate, plugin
+                    end
                 end
             end
         end
