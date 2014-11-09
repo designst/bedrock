@@ -1,0 +1,14 @@
+require 'capistrano/wpcli'
+
+namespace :wpcli do
+    namespace :plugins do
+        desc 'Activate Installed Plugins'
+        task :activate do
+            on roles(:web) do
+                fetch(:required_plugins).each do |plugin|
+                    invoke 'wpcli:run', :plugin, :activate, plugin
+                end
+            end
+        end
+    end
+end
