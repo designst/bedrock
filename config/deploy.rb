@@ -101,7 +101,21 @@ namespace :deploy do
             end
         end
     end
+
+    namespace :check do
+        task :git do
+            on roles(:app) do
+                begin
+                    execute :git, :status
+                rescue
+                    execute :git, :init
+                end
+            end
+        end
+    end
 end
+
+before 'deploy:check', 'deploy:check:git'
 
 after 'deploy:started', 'deploy:wpcli'
 after 'deploy:started', 'deploy:composer'
