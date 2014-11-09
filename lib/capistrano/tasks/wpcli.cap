@@ -14,3 +14,5 @@ namespace :wpcli do
         end
     end
 end
+
+after 'deploy:published', 'wpcli:plugins:activate'
