@@ -1,6 +1,7 @@
 set :stage, :production
-set :rack_env, :production
-set :rails_env, :production
+
+set :rack_env, fetch(:stage)
+set :rails_env, fetch(:stage)
 
 # Simple Role Syntax
 # ==================

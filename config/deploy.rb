@@ -36,6 +36,8 @@ set :keep_db_backups, 10
 SSHKit.config.command_map[:wp] = "php -d memory_limit=512M -d allow_url_fopen=1 -d \
 suhosin.executor.include.whitelist=phar #{fetch(:tmp_dir)}/wp-cli.phar"
 
+SSHKit.config.command_map[:wplocal] = :wp
+
 SSHKit.config.command_map[:composer] = "php -d memory_limit=512M -d allow_url_fopen=1 -d \
 suhosin.executor.include.whitelist=phar #{fetch(:tmp_dir)}/composer.phar"
 
@@ -60,28 +62,6 @@ namespace :deploy do
         end
     end
 
-    desc 'Download WP-CLI'
-    task :wpcli do
-        on roles(:app) do
-            execute "curl -sS https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar > #{fetch(:tmp_dir)}/wp-cli.phar"
-            execute :chmod, '+x', "#{fetch(:tmp_dir)}/wp-cli.phar"
-        end
-    end
-
-    desc 'Download composer'
-    task :composer do
-        on roles(:app) do
-            execute "curl -sS https://getcomposer.org/installer | php -- --install-dir=#{fetch(:tmp_dir)}"
-        end
-    end
-
-    desc 'Manage Permission'
-    task :permission do
-        on roles(:app) do
-            execute "chmod 644 #{shared_path}/web/.htaccess"
-        end
-    end
-
     desc 'Update WordPress template root paths to point to the new release'
     task :update_option_paths do
         on roles(:app) do
@@ -101,28 +81,16 @@ namespace :deploy do
             end
         end
     end
-
-    namespace :check do
-        task :git do
-            on roles(:app) do
-                begin
-                    execute :git, :status
-                rescue
-                    execute :git, :init
-                end
-            end
-        end
-    end
 end
 
-before 'deploy:check', 'deploy:check:git'
+before 'deploy:check', 'ds:check:git'
 
-after 'deploy:started', 'deploy:wpcli'
-after 'deploy:started', 'deploy:composer'
+after 'deploy:started', 'ds:install:wpcli'
+after 'deploy:started', 'ds:install:composer'
 
 before 'deploy:check:linked_files', 'config:init'
 before 'deploy:check:linked_files', 'config:push'
-after 'deploy:check:linked_files', 'deploy:permission'
+after 'deploy:check:linked_files', 'ds:config:permission'
 
 before 'deploy:updating', 'db:backup'
 

@@ -9,13 +9,10 @@ base: &base
   password: <%= ENV['DB_PASSWORD'] %>
 development:
   <<: *base
-  database: <%= ENV['DB_NAME'] %>_development
 production:
   <<: *base
-  database: <%= ENV['DB_NAME'] %>_production
 staging:
   <<: *base
-  database: <%= ENV['DB_NAME'] %>_staging
 local:
   <<: *base
   host: <%= ENV['DB_LOCALHOST'] %>

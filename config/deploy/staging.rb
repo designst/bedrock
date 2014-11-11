@@ -1,6 +1,7 @@
 set :stage, :staging
-set :rack_env, :staging
-set :rails_env, :staging
+
+set :rack_env, fetch(:stage)
+set :rails_env, fetch(:stage)
 
 # Simple Role Syntax
 # ==================

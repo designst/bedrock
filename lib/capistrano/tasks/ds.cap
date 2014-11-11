@@ -1,0 +1,68 @@
+namespace :ds do
+    namespace :install do
+        desc 'Download WP-CLI'
+        task :wpcli do
+            on roles(:app) do
+                execute "curl -sS https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar > #{fetch(:tmp_dir)}/wp-cli.phar"
+                execute :chmod, '+x', "#{fetch(:tmp_dir)}/wp-cli.phar"
+            end
+        end
+
+        desc 'Download composer'
+        task :composer do
+            on roles(:app) do
+                execute "curl -sS https://getcomposer.org/installer | php -- --install-dir=#{fetch(:tmp_dir)}"
+            end
+        end
+    end
+
+    namespace :check do
+        task :git do
+            on roles(:app) do
+                begin
+                    execute :git, :status
+                rescue
+                    execute :git, :init
+                end
+            end
+        end
+    end
+
+    namespace :config do
+        desc 'Manage Permission'
+        task :permission do
+            on roles(:app) do
+                execute "chmod 644 #{shared_path}/web/.htaccess"
+            end
+        end
+    end
+
+    namespace :db do
+        task :pull do
+            invoke 'db:pull'
+
+            remote_wp_home = ENV['WP_HOME']
+            invoke 'dotenv:local'
+            local_wp_home = ENV['WP_HOME']
+
+            run_locally do
+                execute :wplocal, "search-replace", remote_wp_home, local_wp_home, fetch(:wpcli_args) || "--skip-columns=guid"
+            end
+        end
+
+        task :push do
+            invoke 'db:push'
+
+            invoke 'dotenv:local'
+            local_wp_home = ENV['WP_HOME']
+            invoke 'dotenv:stage'
+            remote_wp_home = ENV['WP_HOME']
+
+            on roles(:app) do
+                within release_path do
+                    execute :wp, "search-replace", local_wp_home, remote_wp_home, fetch(:wpcli_args) || "--skip-columns=guid"
+                end
+            end
+        end
+    end
+end
