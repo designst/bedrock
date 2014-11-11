@@ -1,3 +1,8 @@
+before 'deploy:check', 'ds:check:git'
+
+after 'deploy:started', 'ds:install:wpcli'
+after 'deploy:started', 'ds:install:composer'
+
 namespace :ds do
     namespace :install do
         desc 'Download WP-CLI'
@@ -24,15 +29,6 @@ namespace :ds do
                 rescue
                     execute :git, :init
                 end
-            end
-        end
-    end
-
-    namespace :config do
-        desc 'Manage Permission'
-        task :permission do
-            on roles(:app) do
-                execute "chmod 644 #{shared_path}/web/.htaccess"
             end
         end
     end

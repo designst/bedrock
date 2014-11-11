@@ -1,6 +1,12 @@
 # Load upload shared config tasks
 require 'capistrano/upload-config'
 
+before 'deploy:check:linked_files', 'config:init'
+before 'deploy:check:linked_files', 'config:push'
+before 'deploy:check:linked_files', 'config:database'
+
+after 'deploy:check:linked_files', 'config:permission'
+
 # Tasks
 namespace :config do
     desc 'Initialize local config files'
@@ -37,8 +43,11 @@ namespace :config do
             end
         end
     end
-end
 
-before 'deploy:check:linked_files', 'config:init'
-before 'deploy:check:linked_files', 'config:push'
-before 'deploy:check:linked_files', 'config:database'
+    desc 'Manage Permission'
+    task :permission do
+        on roles(:app) do
+            execute "chmod 644 #{shared_path}/web/.htaccess"
+        end
+    end
+end

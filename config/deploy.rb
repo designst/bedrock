@@ -61,43 +61,7 @@ namespace :deploy do
             execute :killall, -9, 'php-cgi'
         end
     end
-
-    desc 'Update WordPress template root paths to point to the new release'
-    task :update_option_paths do
-        on roles(:app) do
-            within fetch(:release_path) do
-                if test :wp, :core, 'is-installed'
-                    [:stylesheet_root, :template_root].each do |option|
-                        # Only change the value if it's an absolute path
-                        # i.e. The relative path "/themes" must remain unchanged
-                        # Also, the option might not be set, in which case we leave it like that
-                        value = capture :wp, :option, :get, option, raise_on_non_zero_exit: false
-
-                        if value != '' and value != '/themes'
-                            execute :wp, :option, :set, option, fetch(:release_path).join('web/wp/wp-content/themes')
-                        end
-                    end
-                end
-            end
-        end
-    end
 end
-
-before 'deploy:check', 'ds:check:git'
-
-after 'deploy:started', 'ds:install:wpcli'
-after 'deploy:started', 'ds:install:composer'
-
-before 'deploy:check:linked_files', 'config:init'
-before 'deploy:check:linked_files', 'config:push'
-after 'deploy:check:linked_files', 'ds:config:permission'
-
-before 'deploy:updating', 'db:backup'
-
-# The above update_option task is not run by default
-# Note that you need to have WP-CLI installed on your server
-# Uncomment the following line to run it on deploys if needed
-after 'deploy:publishing', 'deploy:update_option_paths'
 
 # The above restart task is not run by default
 # Uncomment the following line to run it on deploys if needed
