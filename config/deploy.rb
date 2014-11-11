@@ -58,7 +58,8 @@ namespace :deploy do
         on roles(:app), in: :sequence, wait: 5 do
             # Your restart mechanism here, for example:
             # execute :service, :nginx, :reload
-            execute :killall, -9, 'php-cgi'
+            #execute :killall, -9, 'php-cgi'
+            execute :touch, release_path.join('tmp/restart.txt')
         end
     end
 end

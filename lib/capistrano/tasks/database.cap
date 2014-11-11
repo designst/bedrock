@@ -7,8 +7,6 @@ set :db_remote_clean, true
 set :local_rails_env, 'local'
 set :skip_data_sync_confirm, true
 
-before 'deploy:updating', 'db:backup'
-
 namespace :db do
     desc 'Fetches remote database and stores it'
     task :fetch do
@@ -94,3 +92,5 @@ local:
         end
     end
 end
+
+before 'deploy:updating', 'db:backup'
