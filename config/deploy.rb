@@ -27,6 +27,10 @@ set :log_level, :info
 set :linked_files, fetch(:linked_files, []).push('.env', 'config/database.yml', 'web/.htaccess')
 set :linked_dirs, fetch(:linked_dirs, []).push('web/app/uploads')
 
+# WPCLI Configs
+set :wpcli_local_galleries_dir, "web/app/galleries/"
+set :wpcli_remote_galleries_dir, -> {"#{shared_path.to_s}/web/app/galleries/"}
+
 # Upload Configs
 set :config_files, %w{.env web/.htaccess}
 set :config_example_suffix, '.example'

@@ -14,6 +14,26 @@ namespace :wpcli do
         end
     end
 
+    namespace :galleries do
+        desc 'Push local galleries delta to remote machine'
+        task :push do
+            roles(:all).each do |role|
+                run_locally do
+                    execute :rsync, fetch(:wpcli_rsync_options), fetch(:wpcli_local_galleries_dir), "#{role.user}@#{role.hostname}:#{fetch(:wpcli_remote_galleries_dir)}"
+                end
+            end
+        end
+
+        desc 'Pull remote galleries delta to local machine'
+        task :pull do
+            roles(:all).each do |role|
+                run_locally do
+                    execute :rsync, fetch(:wpcli_rsync_options), "#{role.user}@#{role.hostname}:#{fetch(:wpcli_remote_galleries_dir)}", fetch(:wpcli_local_galleries_dir)
+                end
+            end
+        end
+    end
+
     desc 'Update WordPress template root paths to point to the new release'
     task :update_option_paths do
         on roles(:app) do
