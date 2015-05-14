@@ -7,8 +7,8 @@ Much of the philosophy behind Bedrock is inspired by the [Twelve-Factor App](htt
 
 ## Features
 
-* Dependency management with [Composer](http://getcomposer.org)
 * Better folder structure
+* Dependency management with [Composer](http://getcomposer.org)
 * Easy WordPress configuration with environment specific files
 * Environment variables with [Dotenv](https://github.com/vlucas/phpdotenv)
 * Autoloader for mu-plugins (use regular plugins as mu-plugins)
@@ -22,6 +22,7 @@ Use [bedrock-ansible](https://github.com/roots/bedrock-ansible) for additional f
 ## Requirements
 
 * PHP >= 5.4
+* Composer - [Install](https://getcomposer.org/doc/00-intro.md#installation-linux-unix-osx)
 
 ## Installation
 
