@@ -24,14 +24,7 @@
     "forum": "https://discourse.roots.io/category/bedrock"
   },
   "config": {
-    "preferred-install": "dist",
-    "generate-salts": true
-  },
-  "autoload": {
-    "psr-0": {"Roots\\Bedrock\\Installer": "scripts"}
-  },
-  "scripts": {
-    "post-root-package-install": ["Roots\\Bedrock\\Installer::addSalts"]
+    "preferred-install": "dist"
   },
   "repositories": [
     {
