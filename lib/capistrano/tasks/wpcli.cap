@@ -6,8 +6,10 @@ namespace :wpcli do
         task :activate do
             on roles(:app) do
                 within release_path do
-                    fetch(:required_plugins).each do |plugin|
-                        execute :wp, :plugin, :activate, plugin
+                    if !fetch(:wpcli_required_plugins).nil?
+                        fetch(:wpcli_required_plugins).each do |plugin|
+                            execute :wp, :plugin, :activate, plugin
+                        end
                     end
                 end
             end
