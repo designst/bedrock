@@ -21,6 +21,8 @@ set :deploy_via, :remote_cache
 # Use :debug for more verbose output when troubleshooting
 set :log_level, :info
 
+set :keep_releases, 10
+
 # Apache users with .htaccess files:
 # it needs to be added to linked_files so it persists across deploys:
 # set :linked_files, fetch(:linked_files, []).push('.env', 'web/.htaccess')
