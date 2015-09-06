@@ -3,15 +3,10 @@ namespace :ds do
         desc 'Download WP-CLI'
         task :wpcli do
             on roles(:app) do
-                execute "curl -sS https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar > #{fetch(:tmp_dir)}/wp-cli.phar"
-                execute :chmod, '+x', "#{fetch(:tmp_dir)}/wp-cli.phar"
-            end
-        end
-
-        desc 'Download composer'
-        task :composer do
-            on roles(:app) do
-                execute "curl -sS https://getcomposer.org/installer | php -- --install-dir=#{fetch(:tmp_dir)}"
+                within shared_path do
+                    execute :curl, "-O", "https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar"
+                    execute :chmod, '+x', "wp-cli.phar"
+                end
             end
         end
     end
@@ -59,6 +54,4 @@ namespace :ds do
 end
 
 before 'deploy:check', 'ds:check:git'
-
 after 'deploy:started', 'ds:install:wpcli'
-after 'deploy:started', 'ds:install:composer'
