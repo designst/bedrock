@@ -31,7 +31,7 @@ set :linked_dirs, fetch(:linked_dirs, []).push('web/app/uploads')
 
 # WPCLI Configs
 set :wpcli_local_galleries_dir, "web/app/galleries/"
-set :wpcli_remote_galleries_dir, -> {"#{shared_path.to_s}/web/app/galleries/"}
+set :wpcli_remote_galleries_dir, -> { "#{shared_path.to_s}/web/app/galleries/" }
 
 # Upload Configs
 set :config_files, %w{.env web/.htaccess}
@@ -51,26 +51,27 @@ suhosin.executor.include.whitelist=phar #{fetch(:tmp_dir)}/composer.phar"
 
 # Fix tar execution on freebsd system
 module GitStrategy
-    require 'capistrano/git'
-    include Capistrano::Git::DefaultStrategy
-    def release
-        git :archive, fetch(:branch), '| tar -x -f - -C', release_path
-    end
+  require 'capistrano/git'
+  include Capistrano::Git::DefaultStrategy
+
+  def release
+    git :archive, fetch(:branch), '| tar -x -f - -C', release_path
+  end
 end
 
 set :git_strategy, GitStrategy
 
 namespace :deploy do
-    desc 'Restart application'
-    task :restart do
-        on roles(:app), in: :sequence, wait: 5 do
-            # Your restart mechanism here, for example:
-            # execute :service, :nginx, :reload
-            #execute :killall, -9, 'php-cgi'
-            execute :mkdir, '-p', "#{release_path}/tmp"
-            execute :touch, release_path.join('tmp/restart.txt')
-        end
+  desc 'Restart application'
+  task :restart do
+    on roles(:app), in: :sequence, wait: 5 do
+      # Your restart mechanism here, for example:
+      # execute :service, :nginx, :reload
+      #execute :killall, -9, 'php-cgi'
+      execute :mkdir, '-p', "#{release_path}/tmp"
+      execute :touch, release_path.join('tmp/restart.txt')
     end
+  end
 end
 
 # The above restart task is not run by default
@@ -78,25 +79,25 @@ end
 after 'deploy:publishing', 'deploy:restart'
 
 namespace :deploy do
-    desc 'Update WordPress template root paths to point to the new release'
-    task :update_option_paths do
-        on roles(:app) do
-            within fetch(:release_path) do
-                if test :wp, :core, 'is-installed'
-                    [:stylesheet_root, :template_root].each do |option|
-                        # Only change the value if it's an absolute path
-                        # i.e. The relative path "/themes" must remain unchanged
-                        # Also, the option might not be set, in which case we leave it like that
-                        value = capture :wp, :option, :get, option, raise_on_non_zero_exit: false
+  desc 'Update WordPress template root paths to point to the new release'
+  task :update_option_paths do
+    on roles(:app) do
+      within fetch(:release_path) do
+        if test :wp, :core, 'is-installed'
+          [:stylesheet_root, :template_root].each do |option|
+            # Only change the value if it's an absolute path
+            # i.e. The relative path "/themes" must remain unchanged
+            # Also, the option might not be set, in which case we leave it like that
+            value = capture :wp, :option, :get, option, raise_on_non_zero_exit: false
 
-                        if value != '' && value != '/themes'
-                            execute :wp, :option, :set, option, fetch(:release_path).join('web/wp/wp-content/themes')
-                        end
-                    end
-                end
+            if value != '' && value != '/themes'
+              execute :wp, :option, :set, option, fetch(:release_path).join('web/wp/wp-content/themes')
             end
+          end
         end
+      end
     end
+  end
 end
 
 # The above update_option_paths task is not run by default
