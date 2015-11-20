@@ -4,6 +4,7 @@ set :deploy_user, 'username'
 
 # The name of the application
 set :application, 'my_app_name'
+set :theme_name, 'wp_theme_name'
 
 # The URL of the repository
 set :repo_url, 'git@example.com:me/my_repo.git'
@@ -35,7 +36,7 @@ set :tmp_dir, "#{fetch(:deploy_home)}/tmp/capistrano"
 # Listed files will be symlinked into
 # each release directory during deployment
 set :linked_files, fetch(:linked_files, []).push(
-    '.env', 'config/database.yml', 'web/.htaccess')
+    '.env', 'auth.json', 'config/database.yml', 'web/.htaccess')
 
 # Listed directories will be symlinked into
 # each release directory during deployment
@@ -56,7 +57,7 @@ set :wpcli_remote_galleries_dir, -> { shared_path.join('web/app/galleries/') }
 
 # Upload Configuration
 # https://github.com/rjocoleman/capistrano-upload-config
-set :config_files, %w{.env web/.htaccess}
+set :config_files, %w{.env auth.json web/.htaccess}
 set :config_example_suffix, '.example'
 
 # Database Backup Configuration
@@ -84,6 +85,8 @@ before 'deploy:check:linked_files', 'config:push'
 before 'deploy:check:linked_files', 'config:database'
 
 before 'deploy:updating', 'db:backup'
+
+after 'deploy:updated', 'deploy:assets'
 
 after 'deploy:publishing', 'wpcli:plugins:activate'
 after 'deploy:publishing', 'wpcli:uploads:rsync:push'
