@@ -84,7 +84,7 @@ before 'deploy:check:linked_files', 'config:init'
 before 'deploy:check:linked_files', 'config:push'
 before 'deploy:check:linked_files', 'config:database'
 
-before 'deploy:updating', 'db:backup'
+before 'deploy:updating', 'db:remote:backup'
 
 after 'deploy:updated', 'deploy:assets'
 

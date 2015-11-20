@@ -14,7 +14,7 @@ namespace :wpcli do
     task :activate do
       on roles(:app) do
         within release_path do
-          if !fetch(:wpcli_required_plugins).nil?
+          unless fetch(:wpcli_required_plugins).nil?
             fetch(:wpcli_required_plugins).each do |plugin|
               execute :wp, :plugin, :activate, plugin
             end
@@ -29,7 +29,8 @@ namespace :wpcli do
     task :push do
       roles(:all).each do |role|
         run_locally do
-          execute :rsync, fetch(:wpcli_rsync_options), fetch(:wpcli_local_galleries_dir), "#{role.user}@#{role.hostname}:#{fetch(:wpcli_remote_galleries_dir)}"
+          execute :rsync, fetch(:wpcli_rsync_options), fetch(:wpcli_local_galleries_dir),
+                  "#{role.user}@#{role.hostname}:#{fetch(:wpcli_remote_galleries_dir)}"
         end
       end
     end
@@ -38,7 +39,9 @@ namespace :wpcli do
     task :pull do
       roles(:all).each do |role|
         run_locally do
-          execute :rsync, fetch(:wpcli_rsync_options), "#{role.user}@#{role.hostname}:#{fetch(:wpcli_remote_galleries_dir)}", fetch(:wpcli_local_galleries_dir)
+          execute :rsync, fetch(:wpcli_rsync_options),
+                  "#{role.user}@#{role.hostname}:#{fetch(:wpcli_remote_galleries_dir)}",
+                  fetch(:wpcli_local_galleries_dir)
         end
       end
     end
