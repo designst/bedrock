@@ -1,13 +1,27 @@
-require 'capistrano-db-tasks'
-
 # Automatic Database Backups with Capistrano 3
 # http://www.railsfever.com/blogs/automatic-database-backups-with-capistrano-3
 
-set :db_remote_clean, true
-set :local_rails_env, 'local'
-set :skip_data_sync_confirm, true
-
 namespace :db do
+  desc 'Extend the db:pull task with wpcli commands to search-replace urls'
+  task :pull do
+    on roles(:db) do
+      run_locally do
+        execute :wp, 'search-replace', fetch(:wpcli_remote_url), fetch(:wpcli_local_url),
+                fetch(:wpcli_args) || '--skip-columns=guid'
+      end
+    end
+  end
+
+  desc 'Extend the db:push task with wpcli commands to search-replace urls'
+  task :push do
+    on roles(:db) do
+      within release_path do
+        execute :wp, 'search-replace', fetch(:wpcli_local_url), fetch(:wpcli_remote_url),
+                fetch(:wpcli_args) || '--skip-columns=guid'
+      end
+    end
+  end
+
   desc 'Fetches remote database and stores it'
   task :fetch do
     on roles(:db) do
@@ -92,5 +106,3 @@ local:
     end
   end
 end
-
-before 'deploy:updating', 'db:backup'

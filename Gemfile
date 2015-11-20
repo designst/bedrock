@@ -1,7 +1,6 @@
 source 'https://rubygems.org'
 
 gem 'dotenv'
-#gem 'dotenv-deployment'
 
 gem 'capistrano', '~> 3.4.0'
 gem 'capistrano-wpcli'

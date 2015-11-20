@@ -1,8 +1,5 @@
 set :stage, :production
 
-set :rack_env, fetch(:stage)
-set :rails_env, fetch(:stage)
-
 # Simple Role Syntax
 # ==================
 #role :app, %w{deploy@example.com}

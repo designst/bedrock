@@ -1,8 +1,16 @@
-require 'capistrano/wpcli'
-
 namespace :wpcli do
+  desc 'Install wpcli executable'
+  task :install do
+    on release_roles(:all) do
+      within shared_path do
+        execute :curl, '-O', 'https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar'
+        execute :chmod, '+x', 'wp-cli.phar'
+      end
+    end
+  end
+
   namespace :plugins do
-    desc 'Activate Installed Plugins'
+    desc 'Activate installed plugins'
     task :activate do
       on roles(:app) do
         within release_path do
@@ -56,11 +64,3 @@ namespace :wpcli do
     end
   end
 end
-
-after 'deploy:published', 'wpcli:plugins:activate'
-after 'deploy:published', 'wpcli:uploads:rsync:push'
-
-# The above update_option task is not run by default
-# Note that you need to have WP-CLI installed on your server
-# Uncomment the following line to run it on deploys if needed
-after 'deploy:publishing', 'wpcli:update_option_paths'
