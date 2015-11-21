@@ -74,6 +74,17 @@ set :db_remote_clean, true
 set :local_rails_env, 'local'
 set :skip_data_sync_confirm, true
 
+# Prepare asset paths
+# Build theme path
+set :theme_path, Pathname.new('web/app/themes').join(fetch(:theme_name))
+
+# Build local theme path
+set :local_theme_path, Pathname.new(File.dirname(__FILE__)).join('..').join(fetch(:theme_path))
+
+# Set local build & dist asset paths
+set :local_build_path, fetch(:local_theme_path).join('assets/build')
+set :local_dist_path, fetch(:local_theme_path).join('assets/dist')
+
 # SSHKit command map for wp-cli execution
 SSHKit.config.command_map[:wp] = "/usr/local/php56/bin/php #{shared_path.join('wp-cli.phar')}"
 
