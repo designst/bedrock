@@ -1,4 +1,9 @@
 namespace :deploy do
+  task :all do
+    # Push local database to server
+    after 'deploy:updated', 'db:push'
+  end
+
   namespace :assets do
     desc 'Execute gulp and build production asset files'
     task :compile do

@@ -91,21 +91,36 @@ SSHKit.config.command_map[:wp] = "/usr/local/php56/bin/php #{shared_path.join('w
 # SSHKit command map for composer execution
 SSHKit.config.command_map[:composer] = "/usr/local/php56/bin/php #{shared_path.join('composer.phar')}"
 
+# ------------------------------------
 # Capistrano Deploy-Flow Configuration
+# ------------------------------------
+
+# Install wpcli and composer executables
 after 'deploy:starting', 'wpcli:install'
 after 'deploy:starting', 'composer:install_executable'
 
+# Initialize and push configuration files
 before 'deploy:check:linked_files', 'config:init'
 before 'deploy:check:linked_files', 'config:push'
 before 'deploy:check:linked_files', 'config:database'
 
+# Set correct linked files permissions
+after 'deploy:check:linked_files', 'deploy:set_permissions:chmod'
+
+# Create database dump and download locally
 before 'deploy:updating', 'db:remote:backup'
 
-before 'deploy:updated', 'deploy:set_permissions:chmod'
+# Compile asset files and push to server
+after 'deploy:updating', 'deploy:assets:run'
 
-after 'deploy:updated', 'deploy:assets:run'
+# Push uploads directory to server
+after 'deploy:updated', 'wpcli:uploads:rsync:push'
 
-after 'deploy:publishing', 'wpcli:plugins:activate'
-after 'deploy:publishing', 'wpcli:uploads:rsync:push'
-after 'deploy:publishing', 'wpcli:update_option_paths'
+# Activate plugins
+after 'deploy:updated', 'wpcli:plugins:activate'
+
+# Update theme options with new url
+after 'deploy:updated', 'wpcli:update_option_paths'
+
+# Restart running php processes
 after 'deploy:publishing', 'deploy:restart'
