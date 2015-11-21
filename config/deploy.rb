@@ -103,7 +103,7 @@ before 'deploy:updating', 'db:remote:backup'
 
 before 'deploy:updated', 'deploy:set_permissions:chmod'
 
-after 'deploy:updated', 'deploy:assets'
+after 'deploy:updated', 'deploy:assets:run'
 
 after 'deploy:publishing', 'wpcli:plugins:activate'
 after 'deploy:publishing', 'wpcli:uploads:rsync:push'
