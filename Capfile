@@ -11,6 +11,7 @@ require 'capistrano/wpcli'
 require 'capistrano/composer'
 require 'capistrano-db-tasks'
 require 'capistrano/upload-config'
+require 'capistrano/file-permissions'
 
 # Loads custom tasks from `lib/capistrano/tasks' if you have any defined.
 # Customize this path to change the location of your custom tasks.

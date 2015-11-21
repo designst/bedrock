@@ -60,6 +60,10 @@ set :wpcli_remote_galleries_dir, -> { shared_path.join('web/app/galleries/') }
 set :config_files, %w{.env auth.json web/.htaccess}
 set :config_example_suffix, '.example'
 
+# File Permissions Configuration
+set :file_permissions_paths, %w{web/.htaccess}
+set :file_permissions_chmod_mode, '644'
+
 # Database Backup Configuration
 set :db_backup_path, shared_path.join('db/backup')
 set :keep_db_backups, 10
@@ -85,6 +89,8 @@ before 'deploy:check:linked_files', 'config:push'
 before 'deploy:check:linked_files', 'config:database'
 
 before 'deploy:updating', 'db:remote:backup'
+
+before 'deploy:updated', 'deploy:set_permissions:chmod'
 
 after 'deploy:updated', 'deploy:assets'
 
