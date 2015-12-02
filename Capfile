@@ -9,6 +9,7 @@ require 'capistrano/deploy'
 # Load tasks from gems
 require 'capistrano/wpcli'
 require 'capistrano/composer'
+require 'capistrano-db-tasks'
 require 'capistrano/upload-config'
 
 # Loads custom tasks from `lib/capistrano/tasks' if you have any defined.
