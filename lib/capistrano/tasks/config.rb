@@ -36,4 +36,13 @@ namespace :config do
       end
     end
   end
+
+  desc 'Set permissions of configured files and directories'
+  task :permission do
+    on release_roles(:all) do
+      within shared_path do
+        execute :chmod, '-R', fetch(:file_permissions_chmod_mode), fetch(:file_permissions_paths)
+      end
+    end
+  end
 end

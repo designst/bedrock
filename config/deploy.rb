@@ -105,7 +105,7 @@ before 'deploy:check:linked_files', 'config:push'
 before 'deploy:check:linked_files', 'config:database'
 
 # Set correct linked files permissions
-after 'deploy:check:linked_files', 'deploy:set_permissions:chmod'
+after 'deploy:check:linked_files', 'config:permission'
 
 # Create database dump and download locally
 before 'deploy:updating', 'db:remote:backup'
