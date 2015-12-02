@@ -26,8 +26,7 @@ namespace :db do
     desc 'Backup local database'
     task :backup do
       run_locally do
-        local_db = Database::Local.new(self)
-        local_db.dump
+        # todo: implement backup functionality
       end
     end
 
@@ -40,25 +39,12 @@ namespace :db do
   end
 
   namespace :remote do
-    # desc 'Backup and download remote database'
-    # task :backup do
-    #   on roles(:db) do
-    #     remote_db = Database::Remote.new(self)
-    #
-    #     begin
-    #       remote_db.dump.download
-    #     ensure
-    #       remote_db.clean_dump_if_needed
-    #     end
-    #   end
-    # end
-
     desc 'Backup remote database'
     task :backup do
       on roles(:db) do
         within shared_path do
           config = capture("cat #{shared_path}/config/database.yml")
-          config = YAML.load(ERB.new(config).result)[fetch(:rails_env).to_s]
+          config = YAML.load(ERB.new(config).result)[fetch(:stage).to_s]
 
           execute :mkdir, '-p', fetch(:db_backup_path)
 
