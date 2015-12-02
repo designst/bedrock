@@ -44,3 +44,8 @@ bin
 .DS_Store
 .idea
 debug.log
+
+# Apache
+.htpasswd
+.htpasswd.*
+!.htpasswd.example

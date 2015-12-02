@@ -36,7 +36,7 @@ set :tmp_dir, "#{fetch(:deploy_home)}/tmp/capistrano"
 # Listed files will be symlinked into
 # each release directory during deployment
 set :linked_files, fetch(:linked_files, []).push(
-    '.env', 'auth.json', 'config/database.yml', 'web/.htaccess')
+    '.env', '.htpasswd', 'auth.json', 'config/database.yml', 'web/.htaccess')
 
 # Listed directories will be symlinked into
 # each release directory during deployment
@@ -57,7 +57,7 @@ set :wpcli_remote_galleries_dir, -> { shared_path.join('web/app/galleries/') }
 
 # Upload Configuration
 # https://github.com/rjocoleman/capistrano-upload-config
-set :config_files, %w{.env auth.json web/.htaccess}
+set :config_files, %w{.env .htpasswd auth.json web/.htaccess}
 set :config_example_suffix, '.example'
 
 # File Permissions Configuration
