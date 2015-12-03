@@ -61,7 +61,7 @@ set :config_files, %w{.env .htpasswd auth.json web/.htaccess}
 set :config_example_suffix, '.example'
 
 # File Permissions Configuration
-set :file_permissions_paths, %w{web/.htaccess}
+set :file_permissions_paths, %w{.htpasswd web/.htaccess}
 set :file_permissions_chmod_mode, '644'
 
 # Database Backup Configuration
