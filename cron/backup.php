@@ -18,4 +18,10 @@ $db_name = getenv( 'DB_NAME' );
 $backup_path = $root_dir . '/db/';
 $backup_name = $backup_path . $db_name . '_' . date( 'Y-m-d-His' ) . '.sql.bz2';
 
-exec( "mysqldump --user=$db_user --password=$db_password --host=$db_host $db_name --lock-tables=false | bzip2 -9 > $backup_name" );
+$shared_backup_path = $root_dir . '/../../shared/db/backup';
+
+exec( "/usr/local/bin/mysqldump --user=$db_user --password=$db_password --host=$db_host $db_name --lock-tables=false | bzip2 -9 > $backup_name" );
+exec( "cp $backup_name $shared_backup_path" );
+
+exec( "cd $backup_path && (ls -t|head -n 10;ls)|sort|uniq -u|xargs rm" );
+exec( "cd $shared_backup_path && (ls -t|head -n 10;ls)|sort|uniq -u|xargs rm" );
