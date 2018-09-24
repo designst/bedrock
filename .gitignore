@@ -26,8 +26,7 @@ config/database.*.yml
 db/*.sql*
 
 # Composer
-vendor/*
-!vendor/.gitkeep
+/vendor
 
 # Node Package Manager
 node_modules
