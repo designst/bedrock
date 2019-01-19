@@ -44,3 +44,6 @@ debug.log
 .htpasswd
 .htpasswd.*
 !.htpasswd.example
+
+# WP-CLI
+wp-cli.local.yml
